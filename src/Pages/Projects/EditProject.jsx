@@ -5,7 +5,7 @@ import {
     useGetCategoriesQuery
 } from '../../_core/Slices/apiSlice';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Input, Select, Heading, Textarea, CircularProgressBox } from '../../components/components.js';
+import { Button, Input, Select, Heading, RichTextEditor, CircularProgressBox } from '../../components/components.js';
 import { toast } from 'react-toastify';
 import { uploadMultipleImagesToCloudinary } from '../../utils/cloudinaryUpload';
 
@@ -186,7 +186,13 @@ const EditProject = () => {
                     onChange={(e) => setDisplayOrder(e.target.value)}
                     placeholder="e.g. 1"
                 />
-                <Textarea label="Description" value={description} onChange={(e) => setDescription(e.target.value)} required rows={4} />
+                <RichTextEditor
+                    label="Description"
+                    value={description}
+                    onChange={setDescription}
+                    required
+                    placeholder="Write a detailed description..."
+                />
 
                 <div>
                     <label className="block text-sm font-medium mb-1">Categories</label>
