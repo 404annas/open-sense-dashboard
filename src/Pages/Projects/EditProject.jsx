@@ -20,6 +20,7 @@ const EditProject = () => {
     const [description, setDescription] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [media, setMedia] = useState([]);
+    const [displayOrder, setDisplayOrder] = useState('');
     const [imageFiles, setImageFiles] = useState([]); // Store actual file objects
     const [uploading, setUploading] = useState(false); // Track upload status
     const [showIframeModal, setShowIframeModal] = useState(false);
@@ -34,6 +35,7 @@ const EditProject = () => {
             setDescription(project.description);
             setSelectedCategories(project.categories.map(c => c._id));
             setMedia(project.media);
+            setDisplayOrder(project.displayOrder ?? '');
         }
     }, [projectData]);
 
@@ -126,7 +128,8 @@ const EditProject = () => {
                     name,
                     description,
                     categories: JSON.stringify(selectedCategories),
-                    media: JSON.stringify([...media.filter(m => m.type === 'iframe' || !m.isNew), ...cloudinaryResults])
+                    media: JSON.stringify([...media.filter(m => m.type === 'iframe' || !m.isNew), ...cloudinaryResults]),
+                    ...(displayOrder !== '' ? { displayOrder } : {})
                 };
 
                 // Submit project data to backend
@@ -151,7 +154,8 @@ const EditProject = () => {
                 name,
                 description,
                 categories: JSON.stringify(selectedCategories),
-                media: JSON.stringify(media.filter(m => m.type === 'iframe' || !m.isNew))
+                media: JSON.stringify(media.filter(m => m.type === 'iframe' || !m.isNew)),
+                ...(displayOrder !== '' ? { displayOrder } : {})
             };
 
             try {
@@ -174,6 +178,14 @@ const EditProject = () => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <Input label="Project Name" value={name} onChange={(e) => setName(e.target.value)} required />
+                <Input
+                    label="Display Order"
+                    type="number"
+                    min="0"
+                    value={displayOrder}
+                    onChange={(e) => setDisplayOrder(e.target.value)}
+                    placeholder="e.g. 1"
+                />
                 <Textarea label="Description" value={description} onChange={(e) => setDescription(e.target.value)} required rows={4} />
 
                 <div>

@@ -14,6 +14,7 @@ const CreateProject = () => {
     const [description, setDescription] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [media, setMedia] = useState([]);
+    const [displayOrder, setDisplayOrder] = useState('');
     const [imageFiles, setImageFiles] = useState([]); // Store actual file objects
     const [uploading, setUploading] = useState(false); // Track upload status
     const [showIframeModal, setShowIframeModal] = useState(false);
@@ -110,7 +111,8 @@ const CreateProject = () => {
                     name,
                     description,
                     categories: JSON.stringify(selectedCategories),
-                    media: JSON.stringify([...media.filter(m => m.type === 'iframe'), ...cloudinaryResults])
+                    media: JSON.stringify([...media.filter(m => m.type === 'iframe'), ...cloudinaryResults]),
+                    ...(displayOrder !== '' ? { displayOrder } : {})
                 };
 
                 // Submit project data to backend
@@ -135,7 +137,8 @@ const CreateProject = () => {
                 name,
                 description,
                 categories: JSON.stringify(selectedCategories),
-                media: JSON.stringify(media.filter(m => m.type === 'iframe'))
+                media: JSON.stringify(media.filter(m => m.type === 'iframe')),
+                ...(displayOrder !== '' ? { displayOrder } : {})
             };
 
             try {
@@ -159,6 +162,14 @@ const CreateProject = () => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <Input label="Project Name" value={name} onChange={(e) => setName(e.target.value)} required />
+                <Input
+                    label="Display Order"
+                    type="number"
+                    min="0"
+                    value={displayOrder}
+                    onChange={(e) => setDisplayOrder(e.target.value)}
+                    placeholder="e.g. 1"
+                />
                 <Textarea label="Description" value={description} onChange={(e) => setDescription(e.target.value)} required rows={4} />
 
                 <div>

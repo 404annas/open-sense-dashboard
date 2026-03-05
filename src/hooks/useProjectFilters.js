@@ -21,8 +21,8 @@ export const useProjectFilters = (initialLimit = 10) => {
     });
     
     const [sortConfig, setSortConfig] = useState(() => {
-        const sortBy = searchParams.get('sortBy') || 'createdAt';
-        const sortOrder = searchParams.get('sortOrder') || 'desc';
+        const sortBy = searchParams.get('sortBy') || 'displayOrder';
+        const sortOrder = searchParams.get('sortOrder') || 'asc';
         return { sortBy, sortOrder };
     });
 
@@ -59,7 +59,7 @@ export const useProjectFilters = (initialLimit = 10) => {
         
         // Update sort parameters
         if (newParams.sortBy !== undefined) {
-            if (newParams.sortBy === 'createdAt') {
+            if (newParams.sortBy === 'displayOrder') {
                 params.delete('sortBy');
             } else {
                 params.set('sortBy', newParams.sortBy);
@@ -67,7 +67,7 @@ export const useProjectFilters = (initialLimit = 10) => {
         }
         
         if (newParams.sortOrder !== undefined) {
-            if (newParams.sortOrder === 'desc') {
+            if (newParams.sortOrder === 'asc') {
                 params.delete('sortOrder');
             } else {
                 params.set('sortOrder', newParams.sortOrder);
@@ -100,18 +100,34 @@ export const useProjectFilters = (initialLimit = 10) => {
         setSortConfig(prev => {
             const isAsc = prev.sortBy === newSortBy && prev.sortOrder === 'asc';
             const newSortOrder = isAsc ? 'desc' : 'asc';
-            
+
             setSortConfig({ sortBy: newSortBy, sortOrder: newSortOrder });
             updateSearchParams({ sortBy: newSortBy, sortOrder: newSortOrder });
-            
+
             return { sortBy: newSortBy, sortOrder: newSortOrder };
+        });
+    }, [updateSearchParams]);
+
+    const handleSortByChange = useCallback((newSortBy) => {
+        setSortConfig((prev) => {
+            const nextConfig = { sortBy: newSortBy, sortOrder: prev.sortOrder };
+            updateSearchParams(nextConfig);
+            return nextConfig;
+        });
+    }, [updateSearchParams]);
+
+    const handleSortOrderChange = useCallback((newSortOrder) => {
+        setSortConfig((prev) => {
+            const nextConfig = { sortBy: prev.sortBy, sortOrder: newSortOrder };
+            updateSearchParams(nextConfig);
+            return nextConfig;
         });
     }, [updateSearchParams]);
 
     const resetFilters = useCallback(() => {
         setSearchTerm('');
         setPage(1);
-        setSortConfig({ sortBy: 'createdAt', sortOrder: 'desc' });
+        setSortConfig({ sortBy: 'displayOrder', sortOrder: 'asc' });
         
         const params = new URLSearchParams();
         params.set('limit', initialLimit.toString());
@@ -144,6 +160,8 @@ export const useProjectFilters = (initialLimit = 10) => {
             handleMuiPageChange,
             handleMuiLimitChange,
             handleSortChange,
+            handleSortByChange,
+            handleSortOrderChange,
         },
         queryParams,
         resetFilters,

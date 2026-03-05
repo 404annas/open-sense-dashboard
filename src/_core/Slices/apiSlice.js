@@ -144,6 +144,14 @@ export const apiSlice = createApi({
             },
             invalidatesTags: ['Project'],
         }),
+        reorderProjects: builder.mutation({
+            query: (updates) => ({
+                url: '/projects/reorder',
+                method: 'PUT',
+                body: { updates },
+            }),
+            invalidatesTags: ['Project'],
+        }),
         deleteProject: builder.mutation({
             query: (id) => ({
                 url: `/projects/${id}`,
@@ -212,6 +220,7 @@ export const {
     useGetProjectByIdQuery,
     useCreateProjectMutation,
     useUpdateProjectMutation,
+    useReorderProjectsMutation,
     useDeleteProjectMutation,
 
     // Dashboard Stats
@@ -233,4 +242,3 @@ export const {
     useCreateCostCalculatorRequestMutation,
     useDeleteCostCalculatorRequestMutation,
 } = apiSlice;
-
