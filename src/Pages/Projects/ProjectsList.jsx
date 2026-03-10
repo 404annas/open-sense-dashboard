@@ -16,13 +16,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Button } from "../../components/components";
-import {
-  Edit,
-  Delete,
-  Add,
-  Search,
-  DragIndicator,
-} from "@mui/icons-material";
+import { Edit, Delete, Add, Search, DragIndicator } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import MuiTable from "../../components/ui/MuiTable";
 import { useProjectFilters } from "../../hooks/useProjectFilters";
@@ -44,6 +38,7 @@ const ProjectsList = () => {
     isLoading,
     refetch,
   } = useGetProjectsQuery(queryParams);
+  console.log("Project Data", projectsData);
   const [deleteProject] = useDeleteProjectMutation();
   const [reorderProjects] = useReorderProjectsMutation();
 
@@ -78,10 +73,7 @@ const ProjectsList = () => {
   const handleDragStart = (index) => (event) => {
     if (!canReorder) return;
     setDragIndex(index);
-    event.dataTransfer.setData(
-      "text/plain",
-      displayRows[index]?._id || "",
-    );
+    event.dataTransfer.setData("text/plain", displayRows[index]?._id || "");
     event.dataTransfer.effectAllowed = "move";
   };
 
@@ -127,8 +119,7 @@ const ProjectsList = () => {
       ).unwrap();
     } catch (err) {
       toast.error(
-        "Error updating project order: " +
-          (err.data?.message || err.message),
+        "Error updating project order: " + (err.data?.message || err.message),
       );
       refetch();
     }
